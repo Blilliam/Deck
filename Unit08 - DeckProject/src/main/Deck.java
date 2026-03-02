@@ -2,17 +2,55 @@ package main;
 
 import java.util.ArrayList;
 
-public class Deck {
+public class Deck implements Comparable {
 	private ArrayList<Integer> deck;
 
 	public Deck() {
 		reset();
 	}
-	
+
 	public Deck(ArrayList<Integer> deck) {
 		this.deck = deck;
 	}
+	
+	public int addCards(ArrayList<Integer> moreCards) {
+		int count = 0;
+		
+		for (int i = 0; i < moreCards.size(); i ++ ) {
+			if (!deck.contains(moreCards.get(i))) {
+				deck.add(moreCards.get(i));
+				count++;
+			}
+		}
+		
+		return count;
+	}
 
+	public ArrayList<Integer> deal(int num, boolean bottomdeal) {
+		num = Math.min(num, deck.size());
+		
+		ArrayList<Integer> output = new ArrayList<Integer>(num);
+
+		for (int i = 0; i < num; i++) {
+			if (bottomdeal) {
+				output.add(deck.remove(deck.size() - 1));
+			} else {
+				output.add(deck.remove(0));
+			}
+		}
+		return output;
+
+	}
+	
+	public boolean cut(int cutSpot) {
+		if (cutSpot > deck.size() - 1 || cutSpot < 0) {
+			return false;
+		}
+		deck.addAll(deal(cutSpot + 1, false));
+		
+		return true;
+	}
+	
 	public void reset() {
 		deck = new ArrayList<Integer>(52);
 
@@ -20,28 +58,39 @@ public class Deck {
 			deck.add(i + 1);
 		}
 	}
-	
-	public ArrayList<Integer> deal(int num, boolean bottomdeal) {
-		ArrayList<Integer> output = new ArrayList<Integer>();
-		
-		num = Math.min(num, deck.size());
-		
-		for (int i = 0; i < num; i++) {
-			output.add(deck.remove(0));
-		}
-		
-		return output;
-	}
 
 	public ArrayList<Integer> getDeck() {
 		return deck;
 	}
-	
+
 	public void setDeck(ArrayList<Integer> deck) {
 		this.deck = deck;
 	}
 
 	public String toString() {
 		return deck.toString();
+	}
+
+	@Override
+	public int compareTo(Object deck2) {
+		if (!(deck2 instanceof Deck)) {
+			return -1;
+		}
+		if (((Deck) (deck2)).getDeck().size() == deck.size()) {
+			return -1;
+		}
+		
+		int count = 0;
+		
+		for (int i = 0; i < deck.size(); i ++) {
+			if (deck.get(i) == ((Deck) (deck2)).getDeck().get(i)) {
+				count++;
+			}
+		}
+		if (count == deck.size()) {
+			return 0;
+		}
+		
+		return 1;
 	}
 }
