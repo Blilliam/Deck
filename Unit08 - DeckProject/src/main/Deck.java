@@ -1,6 +1,8 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Deck implements Comparable {
 	private ArrayList<Integer> deck;
@@ -39,7 +41,6 @@ public class Deck implements Comparable {
 			}
 		}
 		return output;
-
 	}
 	
 	public boolean cut(int cutSpot) {
@@ -57,6 +58,11 @@ public class Deck implements Comparable {
 		for (int i = 0; i < 52; i++) {
 			deck.add(i + 1);
 		}
+	}
+	
+	public void shuffleRandom(int count, boolean show) {
+		int bottomSize = (int) (Math.random() * deck.size()/2);
+		ArrayList<Integer> bottomDeck = deal(bottomSize, true);
 	}
 
 	public ArrayList<Integer> getDeck() {
@@ -76,9 +82,6 @@ public class Deck implements Comparable {
 		if (!(deck2 instanceof Deck)) {
 			return -1;
 		}
-		if (((Deck) (deck2)).getDeck().size() == deck.size()) {
-			return -1;
-		}
 		
 		int count = 0;
 		
@@ -91,6 +94,16 @@ public class Deck implements Comparable {
 			return 0;
 		}
 		
-		return 1;
+		Collections.sort((ArrayList<Integer>) (deck2));
+		ArrayList<Integer> temp = deck;
+		Collections.sort(deck);
+		ArrayList<Integer> sortedDeck = temp;
+		deck = temp;
+		
+		if (sortedDeck.equals(deck2)) {
+			return 1;
+		}
+
+		return -1;
 	}
 }
