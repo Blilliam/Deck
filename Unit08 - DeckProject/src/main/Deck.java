@@ -28,19 +28,23 @@ public class Deck implements Comparable {
 		return count;
 	}
 
-	public ArrayList<Integer> deal(int num, boolean bottomdeal) {
-		num = Math.min(num, deck.size());
+	public ArrayList<Integer> deal(ArrayList<Integer> tempDeck, int num, boolean bottomdeal) {
+		num = Math.min(num, tempDeck.size());
 		
 		ArrayList<Integer> output = new ArrayList<Integer>(num);
 
 		for (int i = 0; i < num; i++) {
 			if (bottomdeal) {
-				output.add(deck.remove(deck.size() - 1));
+				output.add(tempDeck.remove(tempDeck.size() - 1));
 			} else {
-				output.add(deck.remove(0));
+				output.add(tempDeck.remove(0));
 			}
 		}
 		return output;
+	}
+	
+	public ArrayList<Integer> deal(int num, boolean bottomdeal) {
+		return deal(deck, num, bottomdeal);
 	}
 	
 	public boolean cut(int cutSpot) {
@@ -61,8 +65,18 @@ public class Deck implements Comparable {
 	}
 	
 	public void shuffleRandom(int count, boolean show) {
-		int bottomSize = (int) (Math.random() * deck.size()/2);
-		ArrayList<Integer> bottomDeck = deal(bottomSize, true);
+		for (int i = 0; i < count; i++) {
+			int bottomSize = (int) (Math.random() * deck.size()/2);
+			ArrayList<Integer> bottomDeck = deal(bottomSize, true);
+			
+			ArrayList<Integer> tempDraw;
+			if (bottomDeck.size() >= 7) {
+				tempDraw = deal(bottomDeck, (int) (Math.random() * 4) + 3, false);
+			} else {
+				tempDraw = deal(bottomDeck, bottomDeck.size(), false);
+			}
+			deck.addAll(tempDraw);
+		}
 	}
 
 	public ArrayList<Integer> getDeck() {
